@@ -30,7 +30,7 @@
 
 # Classe GoogleMap : 
     Methode : 
-        - récupération de la localisation toutes les x secondes ou toutes les x mètres ? (classe ou page)
+        "/" récupération de la localisation toutes les x secondes ou toutes les x mètres ? (classe ou page)
 
 
 # Page GoogleMap : 
