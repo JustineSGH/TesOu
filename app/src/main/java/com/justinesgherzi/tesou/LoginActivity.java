@@ -1,6 +1,7 @@
 package com.justinesgherzi.tesou;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,5 +28,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClickSeConnecter(View view) {
         Log.i("EditText", editText.getText().toString());
+        // Ajouter la vérification si l'utilisateur existe ou non
+        // s'il existe -> lancer activité
+        Intent monIntent = new Intent(this, GoogleMapActivity.class);
+        startActivity(monIntent);
+        // si pas -> afficher message d'erreur (Utilisateur inconnu)
     }
 }
