@@ -16,34 +16,51 @@ import java.util.Map;
 
 public class Bdd extends AppCompatActivity {
 
-    private FirebaseFirestore firebaseFirestore;
     private String NomDeBaseFirestore = "android-fc313";
+    private String IdUtilisateur;
 
 
     public void ConnexionBdd(String idUser){
+        // IdUtilisateur = idUser;
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        /*Map<String, Object> maMap = new HashMap<>();
 
-        Map<String, Object> maMap = new HashMap<>();
+        maMap.put("longitude", 123);
+        maMap.put("latitude", 456);
 
-        maMap.put("premierclef", 123);
-        maMap.put("secondeclef", "catherine");
-
-
-        DocumentReference documentReference1 = FirebaseFirestore.getInstance().collection(NomDeBaseFirestore).document();
+        DocumentReference documentReference1 = FirebaseFirestore.getInstance().collection(NomDeBaseFirestore).document(idUser);
         documentReference1.set(maMap)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.i("just", "success");
+                        Log.d("just", "success");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.i("just", "failure");
+                        Log.d("just", "failure");
+                    }
+                });*/
+
+    }
+
+    public void PostDataInBdd(String IdUser, double longitude, double latitude){
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection(NomDeBaseFirestore).document("test");
+        Map<String, Object> maMap = new HashMap<>();
+        maMap.put("longitude", longitude);
+        maMap.put("latitude", latitude);
+        documentReference.set(maMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d("just", "success");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("just", "failure");
                     }
                 });
-
     }
 }

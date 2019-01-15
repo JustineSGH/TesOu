@@ -2,6 +2,7 @@ package com.justinesgherzi.tesou;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -28,6 +29,8 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
 
     private GoogleMap maGoogleMap;
     private MapFragment monMapFragment;
+    String IdUtilisateur;
+    Bdd bdd = new Bdd();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,11 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         FragmentManager monFragmentManager = getFragmentManager();
         monMapFragment = (MapFragment) monFragmentManager.findFragmentById(R.id.carteGoogleMap);
         verifierPermission();
+        /*Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            IdUtilisateur = extras.getString("IdUtilisateur");
+
+        }*/
     }
 
     private void verifierPermission(){
@@ -82,8 +90,10 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     public void onLocationChanged(Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+
+        bdd.PostDataInBdd(IdUtilisateur, longitude, latitude);
         Toast.makeText(this, "Latitude = "+ latitude + " - Longitude = " + longitude, Toast.LENGTH_LONG).show();
-        maGoogleMap.clear();
+        // maGoogleMap.clear();
         chargerMap();
     }
 
@@ -107,6 +117,11 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 maGoogleMap = googleMap;
+
+
+                bdd.PostDataInBdd(IdUtilisateur, longitude, latitude);
+
+
                 LatLng coordinate = new LatLng(latitude, longitude);
                 maGoogleMap.addMarker(new MarkerOptions().position(coordinate).title("Hello-world"));
                 CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
