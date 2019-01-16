@@ -23,6 +23,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class GoogleMapActivity extends AppCompatActivity implements LocationListener {
 
     private static final int ID_DEMANDE_PERMISSION = 123;
@@ -116,10 +119,12 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             public void onMapReady(GoogleMap googleMap) {
                 maGoogleMap = googleMap;
 
-                bdd.PostDataInBdd(IdUtilisateur, longitude, latitude);
+                Date currentDate = Calendar.getInstance().getTime();
+
+                bdd.PostDataInBdd(IdUtilisateur, longitude, latitude, currentDate);
 
                 LatLng coordinate = new LatLng(latitude, longitude);
-                maGoogleMap.addMarker(new MarkerOptions().position(coordinate).title("Hello-world"));
+                maGoogleMap.addMarker(new MarkerOptions().position(coordinate).title(IdUtilisateur));
                 CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
                 maGoogleMap.animateCamera(location);
             }
