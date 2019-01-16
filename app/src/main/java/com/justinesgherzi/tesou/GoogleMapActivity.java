@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -37,14 +38,11 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_google_map);
 
+        IdUtilisateur = getIntent().getStringExtra("IdUtilisateur");
+
         FragmentManager monFragmentManager = getFragmentManager();
         monMapFragment = (MapFragment) monFragmentManager.findFragmentById(R.id.carteGoogleMap);
         verifierPermission();
-        /*Bundle extras = getIntent().getExtras();
-        if(extras != null){
-            IdUtilisateur = extras.getString("IdUtilisateur");
-
-        }*/
     }
 
     private void verifierPermission(){
@@ -91,7 +89,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         latitude = location.getLatitude();
         longitude = location.getLongitude();
 
-        bdd.PostDataInBdd(IdUtilisateur, longitude, latitude);
         Toast.makeText(this, "Latitude = "+ latitude + " - Longitude = " + longitude, Toast.LENGTH_LONG).show();
         // maGoogleMap.clear();
         chargerMap();
@@ -99,6 +96,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
+
 
     }
 
@@ -118,9 +116,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             public void onMapReady(GoogleMap googleMap) {
                 maGoogleMap = googleMap;
 
-
                 bdd.PostDataInBdd(IdUtilisateur, longitude, latitude);
-
 
                 LatLng coordinate = new LatLng(latitude, longitude);
                 maGoogleMap.addMarker(new MarkerOptions().position(coordinate).title("Hello-world"));

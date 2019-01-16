@@ -22,6 +22,7 @@
 # Classe bdd : 
     Méthode : 
         x connexion à la base de données
+	x enregistrer les données de localisation dans fireBase avec un identifiant associé
         - récupération des données de loc
             - trier par rapport à la distance et à la date (méthode existante ?)
         - vérification de la correspodance des informations de login pour la page de connexion
