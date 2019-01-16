@@ -26,12 +26,12 @@
         - récupération des données de loc
             - trier par rapport à la distance et à la date (méthode existante ?)
         - vérification de la correspodance des informations de login pour la page de connexion
-        - enregistrement de la localisation avec la date
+        x enregistrement de la localisation avec la date
 
 
 # Classe GoogleMap : 
     Methode : 
-        / récupération de la localisation toutes les x secondes ou toutes les x mètres ? (classe ou page)
+        x récupération de la localisation toutes les x secondes ou toutes les x mètres ? (classe ou page)
 
 
 # Page GoogleMap : 
