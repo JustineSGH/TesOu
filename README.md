@@ -25,7 +25,7 @@
 	x enregistrer les données de localisation dans fireBase avec un identifiant associé
         - récupération des données de loc
             - trier par rapport à la distance et à la date (méthode existante ?)
-        - vérification de la correspodance des informations de login pour la page de connexion
+        x vérification de la correspodance des informations de login pour la page de connexion
         x enregistrement de la localisation avec la date
 
 
