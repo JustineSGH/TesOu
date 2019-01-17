@@ -13,10 +13,10 @@
 
 # Classe VerifConnexion : 
     Méthode : 
-        - enregistrer dans un fichier l'id text
+        x enregistrer dans un fichier l'id text
         - supprimer ce fichier à la déconnexion
-        - vérifier si l'utilisateur est connecté (si le fichier existe ou si il est vide)
-        - récupération de l'id (lecture du fichier)
+        x vérifier si l'utilisateur est connecté (si le fichier existe ou si il est vide)
+        x récupération de l'id (lecture du fichier)
 
 
 # Classe bdd : 
@@ -41,5 +41,5 @@
 
 # Page Login : 
     Doit : 
-        - permettre la connexion si l'utilisateur n'est pas connecté
-        - ouvrir la page de googleMap si l'utilisateur est connecté
+        x permettre la connexion si l'utilisateur n'est pas connecté
+        x ouvrir la page de googleMap si l'utilisateur est connecté
