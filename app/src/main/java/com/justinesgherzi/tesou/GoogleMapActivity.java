@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.DocumentReference;
@@ -131,7 +132,10 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                 Date currentDate = Calendar.getInstance().getTime();
 
                 LatLng myCoordinate = new LatLng(latitude, longitude);
-                maGoogleMap.addMarker(new MarkerOptions().position(myCoordinate).title(IdUtilisateur)).showInfoWindow();
+                maGoogleMap.addMarker(new MarkerOptions()
+                        .position(myCoordinate)
+                        .title(IdUtilisateur)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))).showInfoWindow();
 
                 bdd.PostDataInBdd(IdUtilisateur, longitude, latitude, currentDate);
                 arrayList = bdd.getLocationOfUsers();
@@ -150,7 +154,11 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                     float distanceInMeters = currentLocation.distanceTo(newLocation) / 1000;
 
                     LatLng coordinate = new LatLng(str.getLatitude(), str.getLongitude());
-                    maGoogleMap.addMarker(new MarkerOptions().position(coordinate).title(str.getIdUser()).snippet(String.valueOf(distanceInMeters) + "km")).showInfoWindow();
+                    maGoogleMap.addMarker(new MarkerOptions()
+                            .position(coordinate)
+                            .title(str.getIdUser())
+                            .snippet(String.valueOf(distanceInMeters) + "km")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
 
 
                     //CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
