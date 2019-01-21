@@ -1,7 +1,5 @@
 package com.justinesgherzi.tesou;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,25 +8,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 public class Bdd extends AppCompatActivity {
 
     public String NomDeBaseFirestore = "android-fc313";
     private boolean estInscrit;
-    private LatNLon latNLon = new LatNLon();
+
+    private ArrayList<ArrayListCustom> monArrayList = new ArrayList<>();
 
     public void ConnexionBdd(){
     }
@@ -42,7 +36,7 @@ public class Bdd extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                getLocationOfUsers(document.getId());
+                                // getLocationOfUsers(document.getId());
                                 Log.d("bdd", document.getId() + " " + IdUser);
                                 if((document.getId()).equals(IdUser)) {
                                     Log.d("bdd.estInscrit ?", "oui");
@@ -86,27 +80,27 @@ public class Bdd extends AppCompatActivity {
                 });
     }
 
-    public void getLocationOfUsers(final String IdUser) {
-        DocumentReference result;
+    public ArrayList<ArrayListCustom> getLocationOfUsers(){
+        FirebaseFirestore.getInstance().collection(NomDeBaseFirestore)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String idUser = document.getId();
+                                double latitude = document.getDouble("latitude");
+                                double longitude = document.getDouble("longitude");
 
-        result = FirebaseFirestore.getInstance().collection(NomDeBaseFirestore).document(IdUser);
-        result.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    return;
-                }
+                                ArrayListCustom monArrayListCustom = new ArrayListCustom(idUser, latitude, longitude);
+                                monArrayList.add(monArrayListCustom);
+                                // Log.d("informations", "IdUser :" + document.getId() + " Latitude : " + document.getDouble("latitude") + " Longitude : " + document.getDouble("longitude"));
 
-                double latitude = documentSnapshot.getDouble("latitude");
-                double longitude = documentSnapshot.getDouble("longitude");
-
-                latNLon.setLatitude(latitude);
-                latNLon.setLongitude(longitude);
-                latNLon.setIdUtilisateur(IdUser);
-
-                Log.i("information", "IdUser : " + IdUser + " Latitude :" + String.valueOf(latitude) + " Longitude : " + String.valueOf(longitude));
-            }
-        });
+                            }
+                        }
+                    }
+                });
+        return monArrayList;
     }
 
 }

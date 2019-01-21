@@ -28,8 +28,10 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
@@ -44,6 +46,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     private double longitude;
     private String IdUtilisateur;
     private Bdd bdd = new Bdd();
+    private ArrayList<ArrayListCustom> arrayList = new ArrayList<ArrayListCustom>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +54,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         setContentView(R.layout.layout_google_map);
 
         IdUtilisateur = getIntent().getStringExtra("IdUtilisateur");
-
-        if(IdUtilisateur != null){
-            LatNLon latNLon = new LatNLon();
-            double lat = latNLon.getLatitude();
-            double lon = latNLon.getLongitude();
-            String user = latNLon.getIdUtilisateur();
-            Log.d("informations", " Latitude" + String.valueOf(lat) + " Longitude" + String.valueOf(lon) + " User" + IdUtilisateur);
-        }
 
         FragmentManager monFragmentManager = getFragmentManager();
         monMapFragment = (MapFragment) monFragmentManager.findFragmentById(R.id.carteGoogleMap);
@@ -135,12 +130,34 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
 
                 Date currentDate = Calendar.getInstance().getTime();
 
-                bdd.PostDataInBdd(IdUtilisateur, longitude, latitude, currentDate);
+                LatLng myCoordinate = new LatLng(latitude, longitude);
+                maGoogleMap.addMarker(new MarkerOptions().position(myCoordinate).title(IdUtilisateur)).showInfoWindow();
 
-                LatLng coordinate = new LatLng(latitude, longitude);
-                maGoogleMap.addMarker(new MarkerOptions().position(coordinate).title(IdUtilisateur));
-                CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
-                maGoogleMap.animateCamera(location);
+                bdd.PostDataInBdd(IdUtilisateur, longitude, latitude, currentDate);
+                arrayList = bdd.getLocationOfUsers();
+
+                for(ArrayListCustom str: arrayList){
+                    // Log.d("titi-arrayList ", "User : " + str.getIdUser()  + " Latidude : " + str.getLatitude() + " Longitude : " + str.getLongitude());
+
+                    Location currentLocation = new Location("currentLocation");
+                    currentLocation.setLatitude(latitude);
+                    currentLocation.setLongitude(longitude);
+
+                    Location newLocation = new Location("newLocation");
+                    newLocation.setLatitude(str.getLatitude());
+                    newLocation.setLongitude(str.getLongitude());
+
+                    float distanceInMeters = currentLocation.distanceTo(newLocation) / 1000;
+
+                    LatLng coordinate = new LatLng(str.getLatitude(), str.getLongitude());
+                    maGoogleMap.addMarker(new MarkerOptions().position(coordinate).title(str.getIdUser()).snippet(String.valueOf(distanceInMeters) + "km")).showInfoWindow();
+
+
+                    //CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
+                    //maGoogleMap.animateCamera(location);
+                }
+
+
             }
         });
     }
