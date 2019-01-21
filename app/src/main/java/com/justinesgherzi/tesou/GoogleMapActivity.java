@@ -129,15 +129,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             public void onMapReady(GoogleMap googleMap) {
                 maGoogleMap = googleMap;
 
-                Date currentDate = Calendar.getInstance().getTime();
-
-                LatLng myCoordinate = new LatLng(latitude, longitude);
-                maGoogleMap.addMarker(new MarkerOptions()
-                        .position(myCoordinate)
-                        .title(IdUtilisateur)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))).showInfoWindow();
-
-                bdd.PostDataInBdd(IdUtilisateur, longitude, latitude, currentDate);
                 arrayList = bdd.getLocationOfUsers();
 
                 for(ArrayListCustom str: arrayList){
@@ -164,6 +155,15 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                     //CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
                     //maGoogleMap.animateCamera(location);
                 }
+                Date currentDate = Calendar.getInstance().getTime();
+
+                bdd.PostDataInBdd(IdUtilisateur, longitude, latitude, currentDate);
+
+                LatLng myCoordinate = new LatLng(latitude, longitude);
+                maGoogleMap.addMarker(new MarkerOptions()
+                        .position(myCoordinate)
+                        .title(IdUtilisateur)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))).showInfoWindow();
 
 
             }
