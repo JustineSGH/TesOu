@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         editText = findViewById(R.id.idEditText);
 
         String idUser = RecupererInfoFichier();
-        if (idUser!=null) {
+        if (idUser != null) {
             Intent monIntent = new Intent(LoginActivity.this, GoogleMapActivity.class);
             monIntent.putExtra("IdUtilisateur", idUser);
             startActivity(monIntent);
@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (bdd.estInscrit(idUser)) {
             ecritureDansFichier(idUser);
+            // bdd.getLocationOfUsers(idUser);
 
             Intent monIntent = new Intent(LoginActivity.this, GoogleMapActivity.class);
             monIntent.putExtra("IdUtilisateur", idUser);
@@ -57,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         String retourALALigne = System.getProperty("line.separator");
 
 
-        //Ouverture du fichier en ecriture, ett écriture à la fin de celui-ci (true)
+        //Ouverture du fichier en ecriture, et écriture à la fin de celui-ci (true)
         try (FileOutputStream monFileOutputStream = new FileOutputStream(file, true)) {
 
 

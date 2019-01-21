@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.justinesgherzi.tesou">
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -18,9 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GoogleMapActivity"></activity>
-        <activity android:name=".Bdd"></activity>
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_api_key"></meta-data>
+        <activity android:name=".GoogleMapActivity" />
+        <activity android:name=".Bdd" />
+        <activity android:name=".LatNLon" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_api_key" />
+
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.justinesgherzi.tesou;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +11,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -19,10 +22,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public class Bdd extends AppCompatActivity {
 
-    private String NomDeBaseFirestore = "android-fc313";
+    public String NomDeBaseFirestore = "android-fc313";
     private boolean estInscrit;
+    private LatNLon latNLon = new LatNLon();
 
     public void ConnexionBdd(){
     }
@@ -36,6 +42,7 @@ public class Bdd extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                getLocationOfUsers(document.getId());
                                 Log.d("bdd", document.getId() + " " + IdUser);
                                 if((document.getId()).equals(IdUser)) {
                                     Log.d("bdd.estInscrit ?", "oui");
@@ -78,4 +85,28 @@ public class Bdd extends AppCompatActivity {
                     }
                 });
     }
+
+    public void getLocationOfUsers(final String IdUser) {
+        DocumentReference result;
+
+        result = FirebaseFirestore.getInstance().collection(NomDeBaseFirestore).document(IdUser);
+        result.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    return;
+                }
+
+                double latitude = documentSnapshot.getDouble("latitude");
+                double longitude = documentSnapshot.getDouble("longitude");
+
+                latNLon.setLatitude(latitude);
+                latNLon.setLongitude(longitude);
+                latNLon.setIdUtilisateur(IdUser);
+
+                Log.i("information", "IdUser : " + IdUser + " Latitude :" + String.valueOf(latitude) + " Longitude : " + String.valueOf(longitude));
+            }
+        });
+    }
+
 }

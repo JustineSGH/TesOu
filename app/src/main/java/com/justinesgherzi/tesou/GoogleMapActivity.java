@@ -22,9 +22,16 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.annotation.Nullable;
 
 public class GoogleMapActivity extends AppCompatActivity implements LocationListener {
 
@@ -33,8 +40,10 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
 
     private GoogleMap maGoogleMap;
     private MapFragment monMapFragment;
-    String IdUtilisateur;
-    Bdd bdd = new Bdd();
+    private double latitude;
+    private double longitude;
+    private String IdUtilisateur;
+    private Bdd bdd = new Bdd();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,14 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         setContentView(R.layout.layout_google_map);
 
         IdUtilisateur = getIntent().getStringExtra("IdUtilisateur");
+
+        if(IdUtilisateur != null){
+            LatNLon latNLon = new LatNLon();
+            double lat = latNLon.getLatitude();
+            double lon = latNLon.getLongitude();
+            String user = latNLon.getIdUtilisateur();
+            Log.d("informations", " Latitude" + String.valueOf(lat) + " Longitude" + String.valueOf(lon) + " User" + IdUtilisateur);
+        }
 
         FragmentManager monFragmentManager = getFragmentManager();
         monMapFragment = (MapFragment) monFragmentManager.findFragmentById(R.id.carteGoogleMap);
@@ -83,9 +100,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
 
         }
     }
-
-    private double latitude;
-    private double longitude;
 
     @Override
     public void onLocationChanged(Location location) {
@@ -130,4 +144,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             }
         });
     }
+
+
 }
