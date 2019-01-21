@@ -3,6 +3,7 @@ package com.justinesgherzi.tesou;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -21,14 +22,17 @@ public class Bdd extends AppCompatActivity {
 
     public String NomDeBaseFirestore = "android-fc313";
     private boolean estInscrit;
-
     private ArrayList<ArrayListCustom> monArrayList = new ArrayList<>();
+    private Callback callbackNotify;
 
     public void ConnexionBdd(){
     }
 
+    public void registerCallback(Callback callback){
+        callbackNotify = callback;
+    }
 
-    public boolean estInscrit(final String IdUser) {
+    public void compareUserId(final String IdUser) {
         FirebaseFirestore.getInstance().collection(NomDeBaseFirestore)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -40,7 +44,8 @@ public class Bdd extends AppCompatActivity {
                                 Log.d("bdd", document.getId() + " " + IdUser);
                                 if((document.getId()).equals(IdUser)) {
                                     Log.d("bdd.estInscrit ?", "oui");
-                                    estInscrit=true;
+                                    estInscrit = true;
+                                    callbackNotify.call();
                                 } else {
                                     Log.d("bdd.estInscrit ?", "non");
                                 }
@@ -51,6 +56,10 @@ public class Bdd extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    public boolean estInscrit(){
+        Log.d("estInscrit", String.valueOf(estInscrit));
         if (estInscrit) {
             Log.d("bdd", "C'est bon ");
             return true;

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,7 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements Callback {
     private String idUser;
     public EditText editText;
     private Bdd bdd = new Bdd();
@@ -40,15 +41,8 @@ public class LoginActivity extends AppCompatActivity {
         Log.i("EditText", editText.getText().toString());
         idUser = editText.getText().toString();
 
-        if (bdd.estInscrit(idUser)) {
-            ecritureDansFichier(idUser);
-            // bdd.getLocationOfUsers(idUser);
-
-            Intent monIntent = new Intent(LoginActivity.this, GoogleMapActivity.class);
-            monIntent.putExtra("IdUtilisateur", idUser);
-            startActivity(monIntent);
-            // si pas -> afficher message d'erreur (Utilisateur inconnu)
-        }
+        bdd.registerCallback(this);
+        bdd.compareUserId(idUser);
     }
 
 
@@ -103,5 +97,18 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {}
 
         return idUser;
+    }
+
+    @Override
+    public void call() {
+        Log.d("caaaaall", "call");
+        ecritureDansFichier(idUser);
+
+        bdd.getLocationOfUsers();
+
+        Intent monIntent = new Intent(LoginActivity.this, GoogleMapActivity.class);
+        monIntent.putExtra("IdUtilisateur", idUser);
+        startActivity(monIntent);
+
     }
 }
