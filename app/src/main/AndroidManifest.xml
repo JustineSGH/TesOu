@@ -21,7 +21,6 @@
         </activity>
         <activity android:name=".GoogleMapActivity" />
         <activity android:name=".Bdd" />
-        <activity android:name=".LatNLon" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

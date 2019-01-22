@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-
-    android:id="@+id/carteGoogleMap"
-    android:name="com.google.android.gms.maps.MapFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".GoogleMapActivity">
+    android:layout_height="match_parent" >
 
-</fragment>
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+
+        android:id="@+id/carteGoogleMap"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".GoogleMapActivity">
+    </fragment>
+
+    <android.support.design.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/colorPrimary"
+        app:buttonGravity="bottom|top"
+        app:fabAlignmentMode="end"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/setWallpaper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="normal"
+        app:layout_anchor="@id/bottomAppBar" />
+
+</android.support.design.widget.CoordinatorLayout>

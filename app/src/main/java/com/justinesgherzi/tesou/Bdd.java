@@ -25,9 +25,6 @@ public class Bdd extends AppCompatActivity {
     private ArrayList<ArrayListCustom> monArrayList = new ArrayList<>();
     private Callback callbackNotify;
 
-    public void ConnexionBdd(){
-    }
-
     public void registerCallback(Callback callback){
         callbackNotify = callback;
     }

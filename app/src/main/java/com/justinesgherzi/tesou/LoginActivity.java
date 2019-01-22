@@ -99,9 +99,15 @@ public class LoginActivity extends AppCompatActivity implements Callback {
         return idUser;
     }
 
+    public void supprimerFichier() {
+        File dir = getFilesDir();
+        File file = new File(dir, "estConnecte.txt");
+        boolean deleted = file.delete();
+        Log.d("supression fichier" , String.valueOf(deleted));
+    }
+
     @Override
     public void call() {
-        Log.d("caaaaall", "call");
         ecritureDansFichier(idUser);
 
         bdd.getLocationOfUsers();
@@ -110,5 +116,9 @@ public class LoginActivity extends AppCompatActivity implements Callback {
         monIntent.putExtra("IdUtilisateur", idUser);
         startActivity(monIntent);
 
+    }
+
+    public void logoutUser(){
+        finish();
     }
 }

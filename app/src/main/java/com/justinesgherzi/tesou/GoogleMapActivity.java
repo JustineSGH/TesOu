@@ -2,7 +2,6 @@ package com.justinesgherzi.tesou;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,7 +12,9 @@ import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
+import android.view.Menu;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,18 +24,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
-
-import javax.annotation.Nullable;
 
 public class GoogleMapActivity extends AppCompatActivity implements LocationListener {
 
@@ -59,6 +52,26 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         FragmentManager monFragmentManager = getFragmentManager();
         monMapFragment = (MapFragment) monFragmentManager.findFragmentById(R.id.carteGoogleMap);
         verifierPermission();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        LoginActivity loginActivity = new LoginActivity();
+        switch (item.getItemId()) {
+            case R.id.logout:
+                finish();
+                //loginActivity.supprimerFichier();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void verifierPermission(){
@@ -158,7 +171,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                 Date currentDate = Calendar.getInstance().getTime();
 
                 bdd.PostDataInBdd(IdUtilisateur, longitude, latitude, currentDate);
-
                 LatLng myCoordinate = new LatLng(latitude, longitude);
                 maGoogleMap.addMarker(new MarkerOptions()
                         .position(myCoordinate)
