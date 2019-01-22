@@ -7,12 +7,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import android.view.Menu;
 
@@ -46,6 +49,15 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_google_map);
+
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        fab.setOnContextClickListener(new View.OnContextClickListener() {
+            @Override
+            public boolean onContextClick(View v) {
+                Log.d("test", "test au click");
+                return true;
+            }
+        });
 
         IdUtilisateur = getIntent().getStringExtra("IdUtilisateur");
 
