@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
 
         android:id="@+id/carteGoogleMap"
@@ -15,30 +16,39 @@
         tools:context=".GoogleMapActivity">
     </fragment>
 
-    <android.support.design.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:layout_gravity="bottom"
-        app:backgroundTint="@color/colorPrimary"
-        app:buttonGravity="bottom|top"
-        app:fabAlignmentMode="end"/>
-
-   <!--<android.support.design.widget.NavigationView
+    <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_layout"
-        app:menu="@menu/drawer_menu" />-->
+        app:menu="@menu/drawer_menu" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabSize="normal"
-        app:layout_anchor="@id/bottomAppBar" />
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
-</android.support.design.widget.CoordinatorLayout>
+        <android.support.design.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:layout_gravity="bottom"
+            app:backgroundTint="@color/colorPrimary"
+            app:buttonGravity="bottom|top"
+            app:fabAlignmentMode="end"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_anchor="@id/bottomAppBar" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <!--
+
+    -->
+
+</android.support.v4.widget.DrawerLayout>

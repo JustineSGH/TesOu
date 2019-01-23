@@ -8,12 +8,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -46,17 +50,36 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     private ArrayList<ArrayListCustom> arrayList = new ArrayList<ArrayListCustom>();
     private int ditanceMax = 112;
 
+    private DrawerLayout mDrawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_google_map);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        //mDrawerLayout.closeDrawers();
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+                        return true;
+                    }
+                });
+
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
-        fab.setOnContextClickListener(new View.OnContextClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onContextClick(View v) {
-                Log.d("test", "test au click");
-                return true;
+            public void onClick(View v) {
+                Log.d("clickListener", "click click");
+                mDrawerLayout.openDrawer(Gravity.LEFT);
             }
         });
 
@@ -166,6 +189,8 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                                 .position(myCoordinate)
                                 .title(IdUtilisateur)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))).showInfoWindow();
+                        CameraUpdate location = CameraUpdateFactory.newLatLngZoom(myCoordinate, 8);
+                        maGoogleMap.animateCamera(location);
                     } else {
                         //Log.d("titi-arrayList ", "User : " + str.getIdUser()  + " Latidude : " + str.getLatitude() + " Longitude : " + str.getLongitude());
 
@@ -188,8 +213,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
                         }
                     }
-                    //CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
-                    //maGoogleMap.animateCamera(location);
                 }
                 Date currentDate = Calendar.getInstance().getTime();
 
