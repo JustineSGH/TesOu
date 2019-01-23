@@ -14,6 +14,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,7 +88,10 @@ public class Bdd extends AppCompatActivity {
     }
 
     public ArrayList<ArrayListCustom> getLocationOfUsers(){
+        Date currentDate = Calendar.getInstance().getTime();
+        currentDate.setTime(currentDate.getTime() - 60 *60000);
         FirebaseFirestore.getInstance().collection(NomDeBaseFirestore)
+                .whereGreaterThanOrEqualTo("date", currentDate)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

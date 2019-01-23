@@ -44,6 +44,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     private String IdUtilisateur;
     private Bdd bdd = new Bdd();
     private ArrayList<ArrayListCustom> arrayList = new ArrayList<ArrayListCustom>();
+    private int ditanceMax = 112;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,43 +154,48 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 maGoogleMap = googleMap;
-
+                maGoogleMap.clear();
                 arrayList = bdd.getLocationOfUsers();
+                //Log.d("titi", "" + arrayList.size());
 
                 for(ArrayListCustom str: arrayList){
-                    // Log.d("titi-arrayList ", "User : " + str.getIdUser()  + " Latidude : " + str.getLatitude() + " Longitude : " + str.getLongitude());
+                    if (IdUtilisateur.equals(str.getIdUser())) {
+                        // Log.d("titi-arrayList-moi ", "User : " + str.getIdUser()  + " Latidude : " + str.getLatitude() + " Longitude : " + str.getLongitude());
+                        LatLng myCoordinate = new LatLng(latitude, longitude);
+                        maGoogleMap.addMarker(new MarkerOptions()
+                                .position(myCoordinate)
+                                .title(IdUtilisateur)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))).showInfoWindow();
+                    } else {
+                        //Log.d("titi-arrayList ", "User : " + str.getIdUser()  + " Latidude : " + str.getLatitude() + " Longitude : " + str.getLongitude());
 
-                    Location currentLocation = new Location("currentLocation");
-                    currentLocation.setLatitude(latitude);
-                    currentLocation.setLongitude(longitude);
+                        Location currentLocation = new Location("currentLocation");
+                        currentLocation.setLatitude(latitude);
+                        currentLocation.setLongitude(longitude);
 
-                    Location newLocation = new Location("newLocation");
-                    newLocation.setLatitude(str.getLatitude());
-                    newLocation.setLongitude(str.getLongitude());
+                        Location newLocation = new Location("newLocation");
+                        newLocation.setLatitude(str.getLatitude());
+                        newLocation.setLongitude(str.getLongitude());
 
-                    float distanceInMeters = currentLocation.distanceTo(newLocation) / 1000;
+                        float distanceInMeters = currentLocation.distanceTo(newLocation) / 1000;
 
-                    LatLng coordinate = new LatLng(str.getLatitude(), str.getLongitude());
-                    maGoogleMap.addMarker(new MarkerOptions()
-                            .position(coordinate)
-                            .title(str.getIdUser())
-                            .snippet(String.valueOf(distanceInMeters) + "km")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
-
-
+                        if (distanceInMeters <= ditanceMax) {
+                            LatLng coordinate = new LatLng(str.getLatitude(), str.getLongitude());
+                            maGoogleMap.addMarker(new MarkerOptions()
+                                    .position(coordinate)
+                                    .title(str.getIdUser())
+                                    .snippet(String.valueOf(distanceInMeters) + "km")
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
+                        }
+                    }
                     //CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 15);
                     //maGoogleMap.animateCamera(location);
                 }
                 Date currentDate = Calendar.getInstance().getTime();
 
+                arrayList.clear();
+
                 bdd.PostDataInBdd(IdUtilisateur, longitude, latitude, currentDate);
-                LatLng myCoordinate = new LatLng(latitude, longitude);
-                maGoogleMap.addMarker(new MarkerOptions()
-                        .position(myCoordinate)
-                        .title(IdUtilisateur)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))).showInfoWindow();
-
-
             }
         });
     }
