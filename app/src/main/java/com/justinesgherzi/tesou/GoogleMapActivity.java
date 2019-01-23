@@ -78,7 +78,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("clickListener", "click click");
                 mDrawerLayout.openDrawer(Gravity.LEFT);
             }
         });
@@ -90,6 +89,8 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         verifierPermission();
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -99,15 +100,21 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         LoginActivity loginActivity = new LoginActivity();
+        Log.d("item selected", String.valueOf(item));
+
         switch (item.getItemId()) {
             case R.id.logout:
                 finish();
                 //loginActivity.supprimerFichier();
                 return true;
-
+            case R.id.sortBy_date:
+                Log.d("SortByDate", "Trier par date");
+            case R.id.sortBy_distance:
+                Log.d("SortByDistance", "Trier par distance");
             default:
                 return super.onOptionsItemSelected(item);
         }
+
     }
 
     private void verifierPermission(){
