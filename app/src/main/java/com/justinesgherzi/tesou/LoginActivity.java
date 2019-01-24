@@ -22,19 +22,24 @@ public class LoginActivity extends AppCompatActivity implements Callback {
     private String idUser;
     public EditText editText;
     private Bdd bdd = new Bdd();
+    private String cheminFichier = "estConnecte.txt";
+    private File file;
+    private static String DB_PATH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         editText = findViewById(R.id.idEditText);
-
+        file = new File(getFilesDir(), cheminFichier);
+        DB_PATH = getFilesDir().getAbsolutePath();
         String idUser = RecupererInfoFichier();
         if (idUser != null) {
             Intent monIntent = new Intent(LoginActivity.this, GoogleMapActivity.class);
             monIntent.putExtra("IdUtilisateur", idUser);
             startActivity(monIntent);
         }
+
     }
 
     public void onClickSeConnecter(View view) {
@@ -48,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements Callback {
 
     public void ecritureDansFichier(String idUser) {
         //Déclaration des variables
-        File file = new File(getFilesDir(), "estConnecte.txt");
+
         String retourALALigne = System.getProperty("line.separator");
 
 
@@ -81,7 +86,7 @@ public class LoginActivity extends AppCompatActivity implements Callback {
         int i = 0;
         //Ouverture du fichier en lecture
         try {
-            FileInputStream monFileInputStream = openFileInput("estConnecte.txt");
+            FileInputStream monFileInputStream = openFileInput(cheminFichier);
             InputStreamReader monInputStreamReader = new InputStreamReader(monFileInputStream);
             BufferedReader monBufferedReader = new BufferedReader(monInputStreamReader);
 
@@ -100,11 +105,16 @@ public class LoginActivity extends AppCompatActivity implements Callback {
     }
 
     public void supprimerFichier() {
-        File dir = getFilesDir();
-        File file = new File(dir, "estConnecte.txt");
-        boolean deleted = file.delete();
-        Log.d("supression fichier" , String.valueOf(deleted));
+        File file = new File(DB_PATH, cheminFichier);
+        if(file.exists()){
+            Log.d("titi", "Fichier trouvé");
+        }else{
+            Log.d("titi","Fichier non trouvé");
+        }
+        file.delete();
+        logoutUser();
     }
+
 
     @Override
     public void call() {

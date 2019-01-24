@@ -105,7 +105,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         switch (item.getItemId()) {
             case R.id.logout:
                 finish();
-                //loginActivity.supprimerFichier();
+                loginActivity.supprimerFichier();
                 return true;
             case R.id.sortBy_date:
                 Log.d("SortByDate", "Trier par date");
