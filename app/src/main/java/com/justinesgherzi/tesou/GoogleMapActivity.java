@@ -1,17 +1,23 @@
 package com.justinesgherzi.tesou;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.app.FragmentManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -32,11 +38,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class GoogleMapActivity extends AppCompatActivity implements LocationListener {
+public class GoogleMapActivity extends AppCompatActivity implements LocationListener /* NavigationView.OnNavigationItemSelectedListener*/ {
 
     private static final int ID_DEMANDE_PERMISSION = 123;
     private LocationManager monLocationManager;
@@ -58,30 +65,15 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         setContentView(R.layout.layout_google_map);
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        //mDrawerLayout.closeDrawers();
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-                        return true;
-                    }
-                });
-
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawerLayout.openDrawer(Gravity.LEFT);
+                //mDrawerLayout.openDrawer(Gravity.LEFT);
+                onCreateDialog();
             }
         });
-
         IdUtilisateur = getIntent().getStringExtra("IdUtilisateur");
 
         FragmentManager monFragmentManager = getFragmentManager();
@@ -100,17 +92,12 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         LoginActivity loginActivity = new LoginActivity();
-        Log.d("item selected", String.valueOf(item));
 
         switch (item.getItemId()) {
             case R.id.logout:
                 finish();
                 loginActivity.supprimerFichier();
                 return true;
-            case R.id.sortBy_date:
-                Log.d("SortByDate", "Trier par date");
-            case R.id.sortBy_distance:
-                Log.d("SortByDistance", "Trier par distance");
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -159,7 +146,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         longitude = location.getLongitude();
 
         Toast.makeText(this, "Latitude = "+ latitude + " - Longitude = " + longitude, Toast.LENGTH_LONG).show();
-        // maGoogleMap.clear();
         chargerMap();
     }
 
@@ -199,8 +185,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                         CameraUpdate location = CameraUpdateFactory.newLatLngZoom(myCoordinate, 8);
                         maGoogleMap.animateCamera(location);
                     } else {
-                        //Log.d("titi-arrayList ", "User : " + str.getIdUser()  + " Latidude : " + str.getLatitude() + " Longitude : " + str.getLongitude());
-
                         Location currentLocation = new Location("currentLocation");
                         currentLocation.setLatitude(latitude);
                         currentLocation.setLongitude(longitude);
@@ -230,5 +214,40 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         });
     }
 
+   /* @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Log.d("date", "gytdced");
+        switch (menuItem.getItemId()) {
+            case R.id.sortBy_date:
+                Log.d("date", "gytdced");
+                break;
+            case R.id.sortBy_distance:
 
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }*/
+
+    protected Dialog onCreateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GoogleMapActivity.this);
+
+        builder.setTitle(R.string.distance).setItems(R.array.distance, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Resources res = getResources();
+                String[] distance = res.getStringArray(R.array.distance);
+                ditanceMax = Integer.parseInt(distance[which]);
+                Log.d("resultat", String.valueOf(distance[which]));
+            }
+        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+        return builder.create();
+    }
 }
