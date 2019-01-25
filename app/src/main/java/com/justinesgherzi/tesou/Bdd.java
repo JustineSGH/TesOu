@@ -25,13 +25,14 @@ public class Bdd extends AppCompatActivity {
     private boolean estInscrit;
     private ArrayList<ArrayListCustom> monArrayList = new ArrayList<>();
     private Callback callbackNotify;
+    private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     public void registerCallback(Callback callback){
         callbackNotify = callback;
     }
 
     public void compareUserId(final String IdUser) {
-        FirebaseFirestore.getInstance().collection(NomDeBaseFirestore)
+        firebaseFirestore.collection(NomDeBaseFirestore)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -68,7 +69,7 @@ public class Bdd extends AppCompatActivity {
     }
 
     public void PostDataInBdd(String IdUser, double longitude, double latitude, Date currentDate){
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection(NomDeBaseFirestore).document(IdUser);
+        DocumentReference documentReference = firebaseFirestore.collection(NomDeBaseFirestore).document(IdUser);
         Map<String, Object> maMap = new HashMap<>();
         maMap.put("longitude", longitude);
         maMap.put("latitude", latitude);
@@ -90,7 +91,7 @@ public class Bdd extends AppCompatActivity {
     public ArrayList<ArrayListCustom> getLocationOfUsers(){
         Date currentDate = Calendar.getInstance().getTime();
         currentDate.setTime(currentDate.getTime() - 60 *60000);
-        FirebaseFirestore.getInstance().collection(NomDeBaseFirestore)
+        firebaseFirestore.collection(NomDeBaseFirestore)
                 .whereGreaterThanOrEqualTo("date", currentDate)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

@@ -172,7 +172,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                 maGoogleMap = googleMap;
                 maGoogleMap.clear();
                 arrayList = bdd.getLocationOfUsers();
-                //Log.d("titi", "" + arrayList.size());
 
                 for(ArrayListCustom str: arrayList){
                     if (IdUtilisateur.equals(str.getIdUser())) {
@@ -213,22 +212,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             }
         });
     }
-
-   /* @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Log.d("date", "gytdced");
-        switch (menuItem.getItemId()) {
-            case R.id.sortBy_date:
-                Log.d("date", "gytdced");
-                break;
-            case R.id.sortBy_distance:
-
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }*/
 
     protected Dialog onCreateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(GoogleMapActivity.this);
