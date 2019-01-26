@@ -34,13 +34,20 @@ public class LoginActivity extends AppCompatActivity implements Callback {
         file = new File(getFilesDir(), cheminFichier);
         DB_PATH = getFilesDir().getAbsolutePath();
         String idUser = RecupererInfoFichier();
+
         if (idUser != null) {
             Intent monIntent = new Intent(LoginActivity.this, GoogleMapActivity.class);
             monIntent.putExtra("IdUtilisateur", idUser);
             startActivity(monIntent);
+
+            //Démarrer le service en tâche de fond
+            Intent serviceIntent = new Intent(this, BackgroundService.class);
+            serviceIntent.putExtra("idUser", idUser);
+            startService(serviceIntent);
         }
 
     }
+
 
     public void onClickSeConnecter(View view) {
         Log.i("EditText", editText.getText().toString());

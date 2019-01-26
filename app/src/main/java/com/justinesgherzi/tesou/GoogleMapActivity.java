@@ -3,27 +3,27 @@ package com.justinesgherzi.tesou;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.app.FragmentManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -38,12 +38,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class GoogleMapActivity extends AppCompatActivity implements LocationListener /* NavigationView.OnNavigationItemSelectedListener*/ {
+public class GoogleMapActivity extends AppCompatActivity implements LocationListener {
 
     private static final int ID_DEMANDE_PERMISSION = 123;
     private LocationManager monLocationManager;
@@ -71,7 +70,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             @Override
             public void onClick(View v) {
                 //mDrawerLayout.openDrawer(Gravity.LEFT);
-                onCreateDialog();
+               onCreateDialog();
             }
         });
         IdUtilisateur = getIntent().getStringExtra("IdUtilisateur");
@@ -145,7 +144,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         latitude = location.getLatitude();
         longitude = location.getLongitude();
 
-        Toast.makeText(this, "Latitude = "+ latitude + " - Longitude = " + longitude, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Latitude = "+ latitude + " - Longitude = " + longitude, Toast.LENGTH_LONG).show();
         chargerMap();
     }
 
@@ -202,6 +201,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                                     .snippet(String.valueOf(distanceInMeters) + "km")
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
                         }
+
                     }
                 }
                 Date currentDate = Calendar.getInstance().getTime();
@@ -213,6 +213,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         });
     }
 
+    //Création de la pop-up pour choisir la distance
     protected Dialog onCreateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(GoogleMapActivity.this);
 
@@ -233,4 +234,5 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
         builder.show();
         return builder.create();
     }
+
 }
