@@ -7,7 +7,7 @@
 
 
 # Pour la Modularité :
-    Tout passer par des variables (ne rien coder en dure)
+    Tout passer par des variables (ne rien coder en dur)
     Passer par les classes
 
 
