@@ -38,7 +38,7 @@
 
 # Page GoogleMap : 
        x La carte Google s'affiche lorsque l'on clique sur le bouton "Connecter"
-       x Un marqueur googleMap affiche la localisation
+       x Un marqueur googleMap affiche la localisation des utilisateurs
 
 
 # Page Login : 
@@ -48,13 +48,16 @@
 
 
 # Page SignUp :
+    Doit :
 	x permettre l'inscription
 	
 
 # Page de Notification 1 :
-	x envoie des notifications quand un autre utilisateur est proche
-	x tourne en tâche de fond
+    Doit :
+	x envoier des notifications quand un autre utilisateur est proche
+	x tourner en tâche de fond
 	
 # Page de Notification Option 2 :
+    Doit :
 	/ modifier fréquence notification en fonction de la batterie
 	
