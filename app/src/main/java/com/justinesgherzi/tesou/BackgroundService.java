@@ -108,8 +108,7 @@ public class BackgroundService extends Service implements LocationListener {
 
                     float distanceInMeters = currentLocation.distanceTo(newLocation) / 1000;
                     Log.d("distanceInMeters", String.valueOf(distanceInMeters));
-                    //Ici j'envoie la notification si l'utilisateur est proche de toi
-                    // Du coup on reçoit une notification toutes les 5 secondes :-/
+
                     if (distanceInMeters <= distanceUser) {
                         Log.d("distanceInMeters", String.valueOf(distanceInMeters));
                         createNotification(distanceInMeters, str.getIdUser());
@@ -118,7 +117,8 @@ public class BackgroundService extends Service implements LocationListener {
             }
             arrayList.clear();
         }
-        /*reglageNotification(this);
+        /*
+        reglageNotification(this);
         if (monLocationManager != null) {
             monLocationManager.removeUpdates(this);
         }
