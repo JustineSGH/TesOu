@@ -56,5 +56,5 @@
 	x tourne en tâche de fond
 	
 # Page de Notification Option 2 :
-	/ modifié fréquence notification en fonction de la batterie
+	/ modifier fréquence notification en fonction de la batterie
 	
