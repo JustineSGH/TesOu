@@ -138,4 +138,9 @@ public class LoginActivity extends AppCompatActivity implements Callback {
     public void logoutUser(){
         finish();
     }
+
+    public void signUpButton(View view) {
+        Intent monIntent = new Intent(LoginActivity.this, SignUpActivity.class);
+        startActivity(monIntent);
+    }
 }

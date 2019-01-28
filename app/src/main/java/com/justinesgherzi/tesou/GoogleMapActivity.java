@@ -46,7 +46,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
 
     private static final int ID_DEMANDE_PERMISSION = 123;
     private LocationManager monLocationManager;
-
     private GoogleMap maGoogleMap;
     private MapFragment monMapFragment;
     private double latitude;
@@ -54,7 +53,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     private String IdUtilisateur;
     private Bdd bdd = new Bdd();
     private ArrayList<ArrayListCustom> arrayList = new ArrayList<ArrayListCustom>();
-    private int ditanceMax = 112;
+    private int ditanceMax = 100;
 
     private DrawerLayout mDrawerLayout;
 
@@ -70,7 +69,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             @Override
             public void onClick(View v) {
                 //mDrawerLayout.openDrawer(Gravity.LEFT);
-               onCreateDialog();
+                onCreateDialog();
             }
         });
         IdUtilisateur = getIntent().getStringExtra("IdUtilisateur");
@@ -104,7 +103,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     }
 
     private void verifierPermission(){
-        if( !(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+       if( !(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED))
         {
             ActivityCompat.requestPermissions(this, new String[]{
@@ -112,6 +111,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
             } ,ID_DEMANDE_PERMISSION);
             return;
         }
+
         monLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         monLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
         monLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, this);
@@ -143,8 +143,6 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
     public void onLocationChanged(Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-
-        //Toast.makeText(this, "Latitude = "+ latitude + " - Longitude = " + longitude, Toast.LENGTH_LONG).show();
         chargerMap();
     }
 
@@ -164,7 +162,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
 
     }
 
-    private void chargerMap(){
+    public void chargerMap(){
         monMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
@@ -174,14 +172,13 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
 
                 for(ArrayListCustom str: arrayList){
                     if (IdUtilisateur.equals(str.getIdUser())) {
-                        // Log.d("titi-arrayList-moi ", "User : " + str.getIdUser()  + " Latidude : " + str.getLatitude() + " Longitude : " + str.getLongitude());
                         LatLng myCoordinate = new LatLng(latitude, longitude);
                         maGoogleMap.addMarker(new MarkerOptions()
                                 .position(myCoordinate)
                                 .title(IdUtilisateur)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))).showInfoWindow();
-                        CameraUpdate location = CameraUpdateFactory.newLatLngZoom(myCoordinate, 8);
-                        maGoogleMap.animateCamera(location);
+                        //CameraUpdate location = CameraUpdateFactory.newLatLngZoom(myCoordinate, 8);
+                        //maGoogleMap.animateCamera(location);
                     } else {
                         Location currentLocation = new Location("currentLocation");
                         currentLocation.setLatitude(latitude);
@@ -194,6 +191,8 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                         float distanceInMeters = currentLocation.distanceTo(newLocation) / 1000;
 
                         if (distanceInMeters <= ditanceMax) {
+                            Log.d("titi-arrayList ", "User : " + str.getIdUser()  + " Latidude : " + str.getLatitude() + " Longitude : " + str.getLongitude());
+
                             LatLng coordinate = new LatLng(str.getLatitude(), str.getLongitude());
                             maGoogleMap.addMarker(new MarkerOptions()
                                     .position(coordinate)
@@ -224,6 +223,7 @@ public class GoogleMapActivity extends AppCompatActivity implements LocationList
                 String[] distance = res.getStringArray(R.array.distance);
                 ditanceMax = Integer.parseInt(distance[which]);
                 Log.d("resultat", String.valueOf(distance[which]));
+                BackgroundService.setDistanceUser(ditanceMax);
             }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override

@@ -32,6 +32,13 @@ public class Bdd {
         callbackNotify = callback;
     }
 
+    public void signUp(final String idUser){
+
+        PostDataInBdd(idUser, 0.0, 0.0, new Date());
+
+    }
+
+
     public void compareUserId(final String IdUser) {
         firebaseFirestore.collection(NomDeBaseFirestore)
                 .get()

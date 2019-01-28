@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
@@ -19,10 +20,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.google.android.gms.location.LocationRequest;
 
 import java.util.ArrayList;
 
@@ -35,16 +33,14 @@ public class BackgroundService extends Service implements LocationListener {
     private double longitude;
     private Bdd bdd = new Bdd();
     private ArrayList<ArrayListCustom> arrayList = new ArrayList<ArrayListCustom>();
-    private int distanceUser = 5;
+    private static int distanceUser = 5;
     private String idUser;
-
+    private int delai;
+    private int NiveauBatterie;
 
     /*
-    J'ai créé un service qui tourne en arrière plan quand on quitte l'application.
+    service qui tourne en arrière plan quand on quitte l'application.
     Ce service envoie une notification si la distance est inférieure ou églales à 5 Km
-    Il faut juste régler la fréquence d'envoi de notification. Car quand un utilisateur est proche de toi, l'application envoie
-    une notification toutes les 5 secondes.
-    Le code est pas propre mais ça fonctionne :D 
      */
     @Override
     public IBinder onBind(Intent intent) {
@@ -57,8 +53,10 @@ public class BackgroundService extends Service implements LocationListener {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        monLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
-        monLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, this);
+
+        //reglageNotification(this);
+        monLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, delai, 0, this);
+        monLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, delai, 0, this);
     }
 
     @Override
@@ -70,17 +68,16 @@ public class BackgroundService extends Service implements LocationListener {
         return Service.START_STICKY;
     }
 
-    // Je ne sais pas pourquoi mais si je n'appelle pas cette fonction. Le service en arrière plan ne fonctionne pas.
-    private void startForeground(){
+    private void startForeground() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel("unique_channel_id","channel_name", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel("unique_channel_id", "channel_name", NotificationManager.IMPORTANCE_DEFAULT);
         }
         Intent notificationIntent = new Intent(this, GoogleMapActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
 
         startForeground(NOTIF_ID, new NotificationCompat.Builder(this,
-                NOTIF_CHANNEL_ID) 
+                NOTIF_CHANNEL_ID)
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(getString(R.string.app_name))
@@ -89,7 +86,6 @@ public class BackgroundService extends Service implements LocationListener {
                 .build());
     }
 
-    // Ici j'ai reprit un peu ce que l'on avait fait dans la classe GoogleMap.
     @Override
     public void onLocationChanged(Location location) {
         latitude = location.getLatitude();
@@ -98,12 +94,10 @@ public class BackgroundService extends Service implements LocationListener {
         arrayList = bdd.getLocationOfUsers();
 
 
-        if(arrayList.size() != 0){
+        if (arrayList.size() != 0) {
             Log.d("arrayList", String.valueOf(arrayList));
-            for(ArrayListCustom str: arrayList) {
-                if (idUser.equals(str.getIdUser())) {
-
-                }else {
+            for (ArrayListCustom str : arrayList) {
+                if (!idUser.equals(str.getIdUser())) {
                     Location currentLocation = new Location("currentLocation");
                     currentLocation.setLatitude(latitude);
                     currentLocation.setLongitude(longitude);
@@ -118,14 +112,25 @@ public class BackgroundService extends Service implements LocationListener {
                     // Du coup on reçoit une notification toutes les 5 secondes :-/
                     if (distanceInMeters <= distanceUser) {
                         Log.d("distanceInMeters", String.valueOf(distanceInMeters));
-                        createNotification();
+                        createNotification(distanceInMeters, str.getIdUser());
                     }
                 }
             }
             arrayList.clear();
         }
+        /*reglageNotification(this);
+        if (monLocationManager != null) {
+            monLocationManager.removeUpdates(this);
+        }
 
-        Toast.makeText(this, "Latitude = "+ latitude + " - Longitude = " + longitude, Toast.LENGTH_LONG).show();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        monLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, delai, 0, this);
+        monLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, delai, 0, this);
+        Toast.makeText(this, "Latitude = " + latitude + " - Longitude = " + longitude, Toast.LENGTH_LONG).show();*/
+
+
     }
 
     @Override
@@ -144,31 +149,42 @@ public class BackgroundService extends Service implements LocationListener {
     }
 
     //Création de la notification
-    private void createNotification(){
+    private void createNotification(float distanceInMeters, String idUser) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-
-            NotificationChannel notificationChannel = new NotificationChannel("unique_channel","channel_name", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel("unique_channel", "channel_name", NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.enableLights(true);
             notificationChannel.enableVibration(true);
-            notificationChannel.setVibrationPattern(new long[]{500,500,500,500,500});
-            notificationChannel.setLockscreenVisibility( Notification.VISIBILITY_PUBLIC);
+            notificationChannel.setVibrationPattern(new long[]{500, 500, 500, 500, 500});
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 
-            NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(notificationChannel);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "unique_channel")
                     .setSmallIcon(R.mipmap.ic_launcher_round)
                     .setContentTitle("Information")
-                    .setContentText("Une personne est proche de toi !")
+                    .setContentText(idUser + " est à " + distanceInMeters + " Km de toi !")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                     new Intent(this, LoginActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(contentIntent);
-            
+
 
             notificationManager.notify(1223456, mBuilder.build());
         }
 
+    }
+
+    /*public void reglageNotification(Context context) {
+        BatteryManager bm = (BatteryManager)context.getSystemService(BATTERY_SERVICE);
+        NiveauBatterie = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+
+        delai = (int) ((100 - NiveauBatterie) * 0.8*1000);
+        Log.d("titi", "Niveau Battery " + NiveauBatterie+ " delai " + delai);
+    }*/
+
+    public static void setDistanceUser(int distance) {
+        distanceUser = distance;
     }
 }
